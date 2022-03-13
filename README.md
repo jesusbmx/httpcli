@@ -49,7 +49,6 @@ String post(int id, String name, boolean active) throws Exception {
           .add("name", name)
           .add("active", active);
   
-  // http://127.0.0.1/test.php?id=<id>&name=<name>&active=<active>
   HttpRequest request = new HttpRequest(
       "POST", "http://127.0.0.1/test.php", reqBody);
 
