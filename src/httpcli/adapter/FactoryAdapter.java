@@ -50,7 +50,7 @@ public class FactoryAdapter {
       if (classOf == File.class)
           return (RespBodyAdapter<V>) new RespBodyFile();
       if (classOf == ResponseBody.class)
-          return (RespBodyAdapter<V>) new RespBody();
+          return (RespBodyAdapter<V>) new RespBodyRB();
       
       return newOtherRespBodyAdapter(classOf);
     }
