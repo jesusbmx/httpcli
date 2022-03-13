@@ -254,6 +254,41 @@ call.execute(new HttpCallback<Post[]>() {
 });
 ```
 
+## [JSON](https://github.com/stleary/JSON-java)
+(https://www.json.org/json-en.html)
+
+Para android no es necesario descar [org.json jar](https://github.com/stleary/JSON-java)
+Para otras plataformas de java como java swing si es necesario.
+
+```java
+public HttpCall<JSONObject> insert(
+    String nombre, int edad, boolean soltera) {
+      
+    FormBody reqBody = new FormBody()
+        .add("nombre", nombre)
+        .add("edad", edad)
+        .add("soltera", soltera);
+
+    HttpRequest request = new HttpRequest(
+        "POST", "http://127.0.0.1/test.php", reqBody);
+        
+    return cli.newCall(request, JSONObject.class);
+}
+```
+
+```java
+HttpCall<JSONObject> insert = insert(
+    "Elizabéth Magaña", 22, true);
+        
+try {
+    JSONObject json = insert.execute();
+    System.out.println(json.toString(1));
+            
+} catch (Exception e) {
+    e.printStackTrace();
+}
+```
+
 
 License
 =======
