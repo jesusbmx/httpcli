@@ -159,10 +159,105 @@ try (ResponseBody body = insert.execute()) {
 }
 ```
 
+## [GSON](https://github.com/JesusBetaX/WebServiceDemo) 
+
+En tu **build.gradle** necesitarás agregar las dependencias para **GSON**:
+
+```groovy
+dependencies {
+  ...
+  compile 'com.google.code.gson:gson:2.4'
+}
+```
+
+
+Ahora estamos listos para comenzar a escribir un código. Lo primero que querremos hacer es definir nuestro modelo **Post**
+Cree un nuevo archivo llamado **Post.java** y defina la clase **Post** de esta manera:
+
+```java
+public class Post {
+  
+  @SerializedName("id")
+  public long ID;
+    
+  @SerializedName("date")
+  public Date dateCreated;
+ 
+  public String title;
+  public String author;
+  public String url;
+  public String body;
+}
+```
+
+
+Creemos una nueva instancia de **GSON** antes de llamar a la request. También necesitaremos establecer un formato de fecha personalizado en la instancia **GSON** para manejar las fechas que devuelve la API:
+
+Definimos las interacciones de la base de datos. Pueden incluir una variedad de métodos de consulta.:
+
+```java
+public class PostDao {
+  HttpCli cli = HttpCli.get()
+          .setDebug(true);  
+    
+  public PostDao() {
+    Gson gson = new GsonBuilder()
+            .setDateFormat("M/d/yy hh:mm a")
+            .create();
+    
+    cli.setFactory(new GsonFactoryAdapter(gson));
+  }
+
+  public HttpCall<Post[]> getPosts() {
+    HttpRequest request = new HttpRequest(
+        "GET", "https://kylewbanks.com/rest/posts.json");
+
+    return cli.newCall(request, Post[].class);
+  }
+
+  public HttpCall<String> insert(Post p) {
+    RequestBody reqBody = cli.requestBody(p);
+    // RequestBody reqBody = cli.formBody(p);
+    // RequestBody reqBody = cli.multipartBody(p);
+    
+    HttpRequest request = new HttpRequest(
+            "POST", "http://127.0.0.1/test.php", reqBody);
+    
+    return cli.newCall(request, String.class);
+  }
+}
+```
+
+Programa la solicitud para ser ejecutada en segundo plano. Ideal para aplicaciones android. 
+Envía de manera asíncrona la petición y notifica a tu aplicación con un callback cuando una respuesta regresa.
+```java
+...
+PostDao dao = new PostDao();
+    
+HttpCall<Post[]> call = dao.getPosts(); 
+
+call.execute(new HttpCallback<Post[]>() {
+  
+  @Override
+  public void onResponse(Post[] result) throws Exception {
+    List<Post> list = Arrays.asList(result);
+    for (Post post : list) {
+      System.out.println(post.title);
+    }
+  }
+  
+  @Override
+  public void onFailure(Exception e) {
+    e.printStackTrace(System.out);
+  }
+});
+```
+
+
 License
 =======
 
-    Copyright 2018 JesusBetaX, Inc.
+    Copyright 2022 JesusBetaX, Inc.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
