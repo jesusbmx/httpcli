@@ -1,8 +1,9 @@
-package httpcli.adapter;
+package httpcli.adapter.json;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import httpcli.ResponseBody;
+import httpcli.adapter.RespBodyAdapter;
 import httpcli.adapter.json.JSON;
 
 public class RespBodyJSON implements RespBodyAdapter<JSON>{

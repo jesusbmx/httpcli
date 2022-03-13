@@ -1,5 +1,6 @@
 package httpcli.adapter;
 
+import httpcli.adapter.json.RespBodyJSON;
 import httpcli.FormBody;
 import httpcli.MultipartBody;
 import httpcli.RequestBody;
