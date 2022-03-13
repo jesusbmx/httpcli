@@ -160,7 +160,7 @@ try (ResponseBody body = insert.execute()) {
 }
 ```
 
-## [GSON](https://github.com/JesusBetaX/WebServiceDemo) 
+## [GSON](https://github.com/google/gson) 
 
 En tu **build.gradle** necesitarás agregar las dependencias para **GSON**:
 
@@ -220,6 +220,96 @@ public class PostDao {
     RequestBody reqBody = cli.requestBody(p);
     // RequestBody reqBody = cli.formBody(p);
     // RequestBody reqBody = cli.multipartBody(p);
+    
+    HttpRequest request = new HttpRequest(
+            "POST", "http://127.0.0.1/test.php", reqBody);
+    
+    return cli.newCall(request, String.class);
+  }
+}
+```
+
+Programa la solicitud para ser ejecutada en segundo plano. Ideal para aplicaciones android. 
+Envía de manera asíncrona la petición y notifica a tu aplicación con un callback cuando una respuesta regresa.
+```java
+...
+PostDao dao = new PostDao();
+    
+HttpCall<Post[]> call = dao.getPosts(); 
+
+call.execute(new HttpCallback<Post[]>() {
+  
+  @Override
+  public void onResponse(Post[] result) throws Exception {
+    List<Post> list = Arrays.asList(result);
+    for (Post post : list) {
+      System.out.println(post.title);
+    }
+  }
+  
+  @Override
+  public void onFailure(Exception e) {
+    e.printStackTrace(System.out);
+  }
+});
+```
+
+## [Jackson](https://github.com/FasterXML/jackson) 
+
+Ahora estamos listos para comenzar a escribir un código. Lo primero que querremos hacer es definir nuestro modelo **Post**
+Cree un nuevo archivo llamado **Post.java** y defina la clase **Post** de esta manera:
+
+```java
+public class Post {
+    
+  @JsonProperty("id")
+  public long id;
+
+  @JsonProperty("date")
+  public Date dateCreated;
+
+  @JsonProperty("title")
+  public String title;
+  
+  @JsonProperty("author")
+  public String author;
+  
+  @JsonProperty("url")
+  public String url;
+  
+  @JsonProperty("body")
+  public String body;
+}
+```
+
+
+Creemos una nueva instancia de **ObjectMapper** antes de llamar a la request. También necesitaremos establecer un formato de fecha personalizado en la instancia **ObjectMapper** para manejar las fechas que devuelve la API:
+
+Definimos las interacciones de la base de datos. Pueden incluir una variedad de métodos de consulta.:
+
+```java
+public class PostDao {
+  
+  HttpCli cli = HttpCli.get()
+          .setDebug(true);  
+    
+  public PostDao() {
+    ObjectMapper mapper = new ObjectMapper()
+            .setDateFormat(new SimpleDateFormat("M/d/yy hh:mm a"))
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
+    
+    cli.setFactory(new JacksonFactoryAdapter(mapper));
+  }
+
+  public HttpCall<Post[]> getPosts() {
+    HttpRequest request = new HttpRequest(
+        "GET", "https://kylewbanks.com/rest/posts.json");
+
+    return cli.newCall(request, Post[].class);
+  }
+  
+  public HttpCall<String> insert(Post p) {
+    RequestBody reqBody = cli.requestBody(p);
     
     HttpRequest request = new HttpRequest(
             "POST", "http://127.0.0.1/test.php", reqBody);

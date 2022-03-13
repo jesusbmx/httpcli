@@ -1,12 +1,12 @@
 package httpcli.adapter;
 
 import httpcli.adapter.json.RespBodyJSON;
+import httpcli.adapter.json.JSON;
 import httpcli.FormBody;
 import httpcli.MultipartBody;
 import httpcli.RequestBody;
 import httpcli.ResponseBody;
 import java.util.HashMap;
-import httpcli.adapter.json.JSON;
 import java.io.File;
 import java.util.Map;
 
