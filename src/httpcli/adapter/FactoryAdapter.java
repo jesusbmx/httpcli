@@ -1,20 +1,21 @@
 package httpcli.adapter;
 
+import httpcli.RequestBody;
 import httpcli.ResponseBody;
 import java.util.HashMap;
-import httpcli.json.JSON;
+import httpcli.adapter.json.JSON;
 import java.io.File;
 
 public class FactoryAdapter {
 
-    private final HashMap<Class, RespBodyAdapter> respBodyAdapters = 
+    protected final HashMap<Class, RespBodyAdapter> respBodyAdapters = 
             new HashMap<Class, RespBodyAdapter>();
     
-    private final HashMap<Class, ReqBodyAdapter> reqBodyAdapters = 
+    protected final HashMap<Class, ReqBodyAdapter> reqBodyAdapters = 
             new HashMap<Class, ReqBodyAdapter>();
     
     public <V> RespBodyAdapter<V> respBodyAdapter(Class<V> classOf) {
-      RespBodyAdapter<V> adapter = respBodyAdapters.get(classOf);
+      RespBodyAdapter<V> adapter = getRespBodyAdapter(classOf);
       if (adapter == null) {
         adapter = newRespBodyAdapter(classOf);        
         setRespBodyAdapter(classOf, adapter);
@@ -22,11 +23,15 @@ public class FactoryAdapter {
       return adapter;
     }
     
+    public <V> RespBodyAdapter<V> getRespBodyAdapter(Class<V> classOf) {
+        return respBodyAdapters.get(classOf);
+    }
+    
     public <V> FactoryAdapter setRespBodyAdapter(Class<V> classOf, RespBodyAdapter<V> adapter) {
         respBodyAdapters.put(classOf, adapter);
         return this;
     }
-    
+        
     public <V> RespBodyAdapter<V> newRespBodyAdapter(Class<V> classOf) {
       String name = classOf.getCanonicalName();
 
@@ -51,7 +56,7 @@ public class FactoryAdapter {
     }
     
     public <V> ReqBodyAdapter<V> reqBodyAdapter(Class<V> classOf) {
-      ReqBodyAdapter<V> adapter = reqBodyAdapters.get(classOf);
+      ReqBodyAdapter<V> adapter = getReqBodyAdapter(classOf);
       if (adapter == null) {
         adapter = newReqBodyAdapter(classOf);        
         setReqBodyAdapter(classOf, adapter);
@@ -59,6 +64,10 @@ public class FactoryAdapter {
       return adapter;
     }
  
+    public <V> ReqBodyAdapter<V> getReqBodyAdapter(Class<V> classOf) {
+        return reqBodyAdapters.get(classOf);
+    }
+    
     public <V> FactoryAdapter setReqBodyAdapter(Class<V> classOf, ReqBodyAdapter<V> adapter) {
         reqBodyAdapters.put(classOf, adapter);
         return this;
@@ -71,5 +80,15 @@ public class FactoryAdapter {
     
     public <V> ReqBodyAdapter<V> newOtherReqBodyAdapter(Class<V> classOf) {
         throw new RuntimeException("No adapter found for class '"+classOf+"'");
+    }
+
+    public <V> RequestBody requestBody(V src) {
+        try {
+          Class<V> classOf = (Class<V>) src.getClass();
+          ReqBodyAdapter<V> adapter = reqBodyAdapter(classOf);
+          return adapter.parse(src);
+        } catch(Exception e) {
+          throw new RuntimeException(e.getMessage(), e);
+        }
     }
 }

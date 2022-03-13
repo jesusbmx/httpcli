@@ -2,16 +2,14 @@ package httpcli.adapter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import httpcli.HttpRequest;
 import httpcli.ResponseBody;
-import httpcli.json.JSON;
+import httpcli.adapter.json.JSON;
 
 public class RespBodyJSON implements RespBodyAdapter<JSON>{
 
     @Override
     public JSON parse(ResponseBody respBody) throws Exception {
-       HttpRequest request = respBody.request;
-       String json = respBody.string(request.getCharset());
+       String json = respBody.string();
        return JSON.of(json);
     }    
     
@@ -19,8 +17,7 @@ public class RespBodyJSON implements RespBodyAdapter<JSON>{
 
         @Override
         public JSONObject parse(ResponseBody respBody) throws Exception {
-            HttpRequest request = respBody.request;
-            String json = respBody.string(request.getCharset());
+            String json = respBody.string();
             //System.out.println(json);
             return new JSONObject(json);
         }    
@@ -30,8 +27,7 @@ public class RespBodyJSON implements RespBodyAdapter<JSON>{
 
         @Override
         public JSONArray parse(ResponseBody respBody) throws Exception {
-            HttpRequest request = respBody.request;
-            String json = respBody.string(request.getCharset());
+            String json = respBody.string();
             return new JSONArray(json);
         }    
     }

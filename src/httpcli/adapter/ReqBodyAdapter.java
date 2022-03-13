@@ -4,5 +4,5 @@ import httpcli.RequestBody;
 
 public interface ReqBodyAdapter<T> {
     
-    public RequestBody parse(T obj);
+    public RequestBody parse(T obj) throws Exception;
 }

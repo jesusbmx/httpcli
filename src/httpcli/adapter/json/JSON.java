@@ -1,4 +1,4 @@
-package httpcli.json;
+package httpcli.adapter.json;
 
 import org.json.JSONArray;
 import org.json.JSONException;

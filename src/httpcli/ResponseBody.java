@@ -27,6 +27,10 @@ public class ResponseBody implements Closeable {
     return new InputStreamReader(in, charset);
   }
   
+  public Reader charStream() throws IOException {
+    return new InputStreamReader(in, request.charset);
+  }
+  
   public byte[] bytes() throws IOException {
     try {
       return IOUtils.toByteArray(in);

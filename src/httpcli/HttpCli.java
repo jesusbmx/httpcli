@@ -26,7 +26,7 @@ public class HttpCli implements HttpStack {
   private Executor executorDelivery;
  
   /** Fabrica para los adaptadores. */
-  private FactoryAdapter factoryAdapter = new FactoryAdapter();
+  private FactoryAdapter factoryAdapter;
 
   /** Modo debug. */
   private boolean debug;
@@ -88,11 +88,13 @@ public class HttpCli implements HttpStack {
     return this;
   }
 
-  public FactoryAdapter factoryAdapter() {
+  public FactoryAdapter factory() {
+    if (factoryAdapter == null)
+        factoryAdapter = new FactoryAdapter();
     return factoryAdapter;
   }
 
-  public HttpCli setFactoryAdapter(FactoryAdapter factoryAdapter) {
+  public HttpCli setFactory(FactoryAdapter factoryAdapter) {
     this.factoryAdapter = factoryAdapter;
     return this;
   }
@@ -194,7 +196,7 @@ public class HttpCli implements HttpStack {
   }
   
   public <V> V execute(HttpRequest request, Class<V> classOf) throws Exception {
-    return execute(request, factoryAdapter.respBodyAdapter(classOf));
+    return execute(request, factory().respBodyAdapter(classOf));
   }
  
   /**
@@ -212,7 +214,10 @@ public class HttpCli implements HttpStack {
   }
   
   public <V> HttpCall<V> newCall(HttpRequest request, Class<V> classOf) {
-    return newCall(request, factoryAdapter.respBodyAdapter(classOf));
+    return newCall(request, factory().respBodyAdapter(classOf));
   }
 
+  public <V> RequestBody requestBody(V src) {
+    return factory().requestBody(src);
+  }
 }
