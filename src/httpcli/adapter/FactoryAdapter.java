@@ -10,9 +10,8 @@ public class FactoryAdapter {
     private final HashMap<Class, RespBodyAdapter> respBodyAdapters = 
             new HashMap<Class, RespBodyAdapter>();
     
-    public <V> ReqBodyAdapter<V> reqBodyAdapter(Class<V> classOf) {
-      throw new RuntimeException("No adapter found for class '"+classOf+"'");
-    }
+    private final HashMap<Class, ReqBodyAdapter> reqBodyAdapters = 
+            new HashMap<Class, ReqBodyAdapter>();
     
     public <V> RespBodyAdapter<V> respBodyAdapter(Class<V> classOf) {
       RespBodyAdapter<V> adapter = respBodyAdapters.get(classOf);
@@ -48,6 +47,29 @@ public class FactoryAdapter {
     }
     
     public <V> RespBodyAdapter<V> newOtherRespBodyAdapter(Class<V> classOf) {
+        throw new RuntimeException("No adapter found for class '"+classOf+"'");
+    }
+    
+    public <V> ReqBodyAdapter<V> reqBodyAdapter(Class<V> classOf) {
+      ReqBodyAdapter<V> adapter = reqBodyAdapters.get(classOf);
+      if (adapter == null) {
+        adapter = newReqBodyAdapter(classOf);        
+        setReqBodyAdapter(classOf, adapter);
+      }
+      return adapter;
+    }
+ 
+    public <V> FactoryAdapter setReqBodyAdapter(Class<V> classOf, ReqBodyAdapter<V> adapter) {
+        reqBodyAdapters.put(classOf, adapter);
+        return this;
+    }
+    
+    public <V> ReqBodyAdapter<V> newReqBodyAdapter(Class<V> classOf) {
+      //String name = classOf.getCanonicalName();
+      return newOtherReqBodyAdapter(classOf);
+    }
+    
+    public <V> ReqBodyAdapter<V> newOtherReqBodyAdapter(Class<V> classOf) {
         throw new RuntimeException("No adapter found for class '"+classOf+"'");
     }
 }

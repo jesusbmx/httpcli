@@ -73,7 +73,7 @@ String delete(int id) throws Exception {
 ```java
 File download() throws Exception {
   HttpRequest request = new HttpRequest(
-      "GET", "https://github.com/JesusBetaX/Restlight/raw/master/dist/restlight.jar")
+      "GET", "https://github.com/JesusBetaX/Restlight/raw/master/dist/httpcli.jar")
       .setTimeoutMs(20000);
   
   RespBodyFile adapter = new RespBodyFile(
