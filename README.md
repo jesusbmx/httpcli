@@ -49,6 +49,7 @@ String post(int id, String name, boolean active) throws Exception {
           .add("name", name)
           .add("active", active);
   
+  // http://127.0.0.1/test.php?id=<id>&name=<name>&active=<active>
   HttpRequest request = new HttpRequest(
       "POST", "http://127.0.0.1/test.php", reqBody);
 
@@ -62,6 +63,7 @@ String delete(int id) throws Exception {
   FormBody body = new FormBody()
       .add("id", id);
 
+  // http://127.0.0.1/test.php?id=<id>
   HttpRequest request = new HttpRequest(
       "DELETE", "http://127.0.0.1/test.php", body);
 
