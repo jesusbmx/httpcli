@@ -33,9 +33,9 @@ public class RespBodyFile implements RespBodyAdapter<File> {
   
   @Override
   public File parse(ResponseBody respBody) throws Exception {
-    File file = localFile();
     BufferedOutputStream bos = null;
     try {
+      File file = localFile();
       bos = new BufferedOutputStream(new FileOutputStream(file));
       respBody.writeTo(bos);
       return file;
