@@ -4,7 +4,7 @@ HttpCli es una librería **HTTP** para Android y Java, que facilita la creación
 
 ## Ejemplos
 
-### INIT
+### init
 ```java
 HttpCli cli = HttpCli.get()
     .setDebug(true);
@@ -296,7 +296,7 @@ public class PostDao {
   public PostDao() {
     ObjectMapper mapper = new ObjectMapper()
             .setDateFormat(new SimpleDateFormat("M/d/yy hh:mm a"))
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     
     cli.setFactory(new JacksonFactoryAdapter(mapper));
   }
