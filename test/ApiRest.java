@@ -65,11 +65,11 @@ public class ApiRest {
     
     File download() throws Exception {
         HttpRequest request = new HttpRequest(
-            "GET", "https://github.com/JesusBetaX/Restlight/raw/master/dist/restlight.jar")
+            "GET", "https://github.com/HttpCli/Restlight/raw/master/dist/httpcli.jar")
             .setTimeoutMs(5000 * 2 * 2);
         
         RespBodyFile adapter = new RespBodyFile(
-            "C:\\Users\\Jesus\\Downloads\\restlight.jar");
+            "C:\\Users\\Jesus\\Downloads\\httpcli.jar");
         
         return cli.execute(request, adapter);
         //return cli.execute(request, File.class);

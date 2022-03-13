@@ -41,6 +41,7 @@ public class RespBodyFile implements RespBodyAdapter<File> {
       return file;
     } finally {
       IOUtils.closeQuietly(bos);
+      respBody.close();
     }
   }
 }
