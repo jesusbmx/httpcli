@@ -1,10 +1,13 @@
 package httpcli.adapter;
 
+import httpcli.FormBody;
+import httpcli.MultipartBody;
 import httpcli.RequestBody;
 import httpcli.ResponseBody;
 import java.util.HashMap;
 import httpcli.adapter.json.JSON;
 import java.io.File;
+import java.util.Map;
 
 public class FactoryAdapter {
 
@@ -90,5 +93,19 @@ public class FactoryAdapter {
         } catch(Exception e) {
           throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    public <V> FormBody formBody(V src) {
+        Map<String, Object> map = toMap(src);
+        return new FormBody(map);
+    }
+    
+    public <V> MultipartBody multipartBody(V src) {
+        Map<String, Object> map = toMap(src);
+        return new MultipartBody(map);
+    }
+
+    public <V> Map<String, Object> toMap(V src) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

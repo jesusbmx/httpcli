@@ -2,9 +2,12 @@ package httpcli.adapter.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
+import com.google.gson.reflect.TypeToken;
 import httpcli.adapter.FactoryAdapter;
 import httpcli.adapter.ReqBodyAdapter;
 import httpcli.adapter.RespBodyAdapter;
+import java.lang.reflect.Type;
+import java.util.Map;
 
 public class GsonFactoryAdapter extends FactoryAdapter {
 
@@ -25,5 +28,15 @@ public class GsonFactoryAdapter extends FactoryAdapter {
         TypeAdapter<V> adapter = gson.getAdapter(classOf);
         return new ReqBodyGson<V>(gson, adapter);
     }
- 
+
+    @Override
+    public <V> Map<String, Object> toMap(V src) {
+        Class<V> classOf = (Class<V>) src.getClass();
+        
+        TypeAdapter<V> adapter = gson.getAdapter(classOf);
+        String json = adapter.toJson(src);
+        
+        Type empMapType = new TypeToken<Map<String, Object>>() {}.getType();
+        return gson.fromJson(json, empMapType);
+    }   
 }

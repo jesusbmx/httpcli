@@ -220,4 +220,12 @@ public class HttpCli implements HttpStack {
   public <V> RequestBody requestBody(V src) {
     return factory().requestBody(src);
   }
+  
+  public <V> FormBody formBody(V src) {
+    return factory().formBody(src);
+  }
+  
+  public <V> MultipartBody multipartBody(V src) {
+    return factory().multipartBody(src);
+  }
 }
