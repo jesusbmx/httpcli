@@ -1,6 +1,6 @@
 ## HttpCli
 
-HttpCli es una librería **HTTP** para Android y Java, que facilita la creación de peticiones **HTTP** como: GET, POST, HEAD, OPTIONS, PUT, DELETE y TRACE; hacia servidores externos. [Descargar .jar](https://github.com/JesusBetaX/HttpCli/raw/master/dist/httpcli.jar) o [Ver demo](https://github.com/JesusBetaX/WebServiceDemo) 
+HttpCli es una librería **HTTP** para Android y Java, que facilita la creación de peticiones **HTTP** como: GET, POST, HEAD, OPTIONS, PUT, DELETE y TRACE; hacia servidores externos. [Descargar .jar](https://github.com/jesusbmx/HttpCli/raw/master/dist/httpcli.jar) o [Ver demo](https://github.com/jesusbmx/HttpCli/tree/master/test) 
 
 ## Ejemplos
 
@@ -53,7 +53,7 @@ String delete(int id) throws Exception {
 ```java
 File download() throws Exception {
   HttpRequest request = new HttpRequest(
-      "GET", "https://github.com/JesusBetaX/Restlight/raw/master/dist/httpcli.jar")
+      "GET", "https://github.com/jesusbmx/HttpCli/raw/master/dist/httpcli.jar")
       .setTimeoutMs(20000);
   
   RespBodyFile adapter = new RespBodyFile(
