@@ -32,6 +32,8 @@ public class JacksonFactoryAdapter extends FactoryAdapter {
 
     @Override
     public <V> Map<String, Object> toMap(V src) {
+        if (src == null) return null;
+        
         try {
             TypeReference<HashMap<String, Object>> typeRef 
                     = new TypeReference<HashMap<String, Object>>() {};

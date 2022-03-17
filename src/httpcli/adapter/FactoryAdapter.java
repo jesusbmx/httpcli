@@ -8,15 +8,29 @@ import httpcli.RequestBody;
 import httpcli.ResponseBody;
 import java.util.HashMap;
 import java.io.File;
+import java.util.Iterator;
 import java.util.Map;
 
 public class FactoryAdapter {
+    /** Singleton de la clase. */
+    private static FactoryAdapter instance;
 
-    protected final HashMap<Class, RespBodyAdapter> respBodyAdapters = 
+    /** Cache de adaptadores para las respuestas. */
+    protected final Map<Class, RespBodyAdapter> respBodyAdapters = 
             new HashMap<Class, RespBodyAdapter>();
     
-    protected final HashMap<Class, ReqBodyAdapter> reqBodyAdapters = 
+    /** Cache de adaptadores para las peticiones. */
+    protected final Map<Class, ReqBodyAdapter> reqBodyAdapters = 
             new HashMap<Class, ReqBodyAdapter>();
+
+    public FactoryAdapter() {
+    }
+    
+    public static FactoryAdapter get() {
+        if (instance == null)
+            instance = new FactoryAdapter();
+        return instance;
+    }
     
     public <V> RespBodyAdapter<V> respBodyAdapter(Class<V> classOf) {
       RespBodyAdapter<V> adapter = getRespBodyAdapter(classOf);
@@ -78,7 +92,6 @@ public class FactoryAdapter {
     }
     
     public <V> ReqBodyAdapter<V> newReqBodyAdapter(Class<V> classOf) {
-      //String name = classOf.getCanonicalName();
       return newOtherReqBodyAdapter(classOf);
     }
     
@@ -87,6 +100,7 @@ public class FactoryAdapter {
     }
 
     public <V> RequestBody requestBody(V src) {
+        if (src == null) return null;
         try {
           Class<V> classOf = (Class<V>) src.getClass();
           ReqBodyAdapter<V> adapter = reqBodyAdapter(classOf);
@@ -97,16 +111,40 @@ public class FactoryAdapter {
     }
 
     public <V> FormBody formBody(V src) {
-        Map<String, Object> map = toMap(src);
-        return new FormBody(map);
+        if (src == null) return null;
+        return new FormBody(map(src));
     }
     
     public <V> MultipartBody multipartBody(V src) {
-        Map<String, Object> map = toMap(src);
-        return new MultipartBody(map);
+        if (src == null) return null;
+        return new MultipartBody(map(src));
     }
 
+    public <V> Map<String, Object> map(V src) {
+        if (src == null) return null;
+        
+        if (src instanceof Map) {
+            Map map = (Map) src;
+            Iterator itkeys = map.keySet().iterator();
+            Map<String, Object> r = new HashMap<String, Object>(map.size());
+            while (itkeys.hasNext()) {
+                Object key = itkeys.next();
+                r.put(String.valueOf(key), map.get(key));
+            }
+            return r;
+        }
+        
+        return toMap(src);
+     }
+    
     public <V> Map<String, Object> toMap(V src) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (src == null) return null;
+        try {
+            Class<V> classOf = (Class<V>) src.getClass();
+            ObjectAdapter<V> adapter = ObjectAdapter.get(classOf);
+            return adapter.toMap(src);
+          } catch(Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 }

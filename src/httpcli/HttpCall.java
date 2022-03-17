@@ -36,13 +36,17 @@ public interface HttpCall<T> {
   RespBodyAdapter<T> adapter();
   
   /**
-   * Cancele esta llamada. 
+   * Trata de cancelar la ejecución de esta tarea.
+   *
+   * @param mayInterruptIfRunning {@code true} valida se el hilo que se ejecuta 
+   * debe ser interrumpido; de lo contrario, se permiten tareas en curso
+   * hasta completar.
    */
-  void cancel();
+  boolean cancel(boolean mayInterruptIfRunning);
   
-  /**
-   * Valida si la llamada ha sido cancelada.
-   * @return true se se cancelo
-   */
-  boolean isCancel();
+   /** Devuelve <tt>true</tt> si esta tarea estaba cancelada. */
+  boolean isCancelled();
+
+  /** Devuelve <tt>true</tt> si esta tarea se completó. */
+  boolean isDone();
 }

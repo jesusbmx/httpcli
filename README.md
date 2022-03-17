@@ -10,32 +10,11 @@ HttpCli cli = HttpCli.get()
     .setDebug(true);
 ```
 
-### Simple Request
-```java
-String run() throws Exception {
-  HttpRequest request = new HttpRequest(
-        "GET", "https://api.github.com/users/defunkt");
-
-  try (ResponseBody body = cli.execute(request)) {
-    //body.code {200}
-    //body.headers {
-    //    Keep-Alive: timeout=5, max=98
-    //    Server: Apache/2.4.25 (Win32) OpenSSL/1.0.2j PHP/5.6.30
-    //    Connection: Keep-Alive
-    //}
-    //body.in {InputStream}
-    //body.bytes() {byte[]}  => body.close()
-    return body.string(); // => body.close()
-  }
-}
-```
-
 ### GET
 ```java
 String get() throws Exception {
-  HttpUrl url = new HttpUrl("https://api.github.com/users/defunkt");
-  
-  HttpRequest request = new HttpRequest("GET", url);
+  HttpRequest request = new HttpRequest(
+       "GET", "https://api.github.com/users/defunkt");
 
   return cli.execute(request, String.class);
 }
@@ -96,6 +75,27 @@ String upload() throws Exception {
     "POST", "http://127.0.0.1/test.php", body);
 
   return cli.execute(request, String.class);
+}
+```
+
+### Simple Request
+```java
+String run() throws Exception {
+  HttpUrl url = new HttpUrl("https://api.github.com/users/defunkt");
+
+  HttpRequest request = new HttpRequest("GET", url);
+
+  try (ResponseBody body = cli.execute(request)) {
+    //body.code {200}
+    //body.headers {
+    //    Keep-Alive: timeout=5, max=98
+    //    Server: Apache/2.4.25 (Win32) OpenSSL/1.0.2j PHP/5.6.30
+    //    Connection: Keep-Alive
+    //}
+    //body.in {InputStream}
+    //body.bytes() {byte[]}  => body.close()
+    return body.string(); // => body.close()
+  }
 }
 ```
 

@@ -33,9 +33,6 @@ public class HttpRequest {
   
   /** Codificacion. */
   Charset charset = DEFAULT_ENCODING;
-  
-  /** Valida si la request fue cancelada. */
-  boolean isCanceled;
 
   boolean isDebug;
   
@@ -56,24 +53,6 @@ public class HttpRequest {
   
   public HttpRequest(String method, HttpUrl url) {
     setMethod(method).setUrl(url);
-  }
-  
-  /**
-   * @return true si se cancelo la peticion.
-   */
-  public boolean isCanceled() {
-    synchronized (this) {
-      return isCanceled;
-    }
-  }
-
-  /**
-   * Cancela la peticion.
-   */
-  public void cancel() {
-    synchronized (this) {
-      isCanceled = true;
-    }
   }
     
   public String getMethod() {
@@ -166,7 +145,7 @@ public class HttpRequest {
   @Override public String toString() {
     return "Request@" + hashCode() + " " + method + " " + url + "\nheaders:\n" 
             + headers + "\nbody: " + body + "\n\ntag=" + tag + ", timeoutMs=" + timeoutMs 
-            + ", charset=" + charset + ", isCanceled=" + isCanceled + "\n---";
+            + ", charset=" + charset + "\n---";
   }
 
   public void d(String format, Object... args) {

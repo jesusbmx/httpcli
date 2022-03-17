@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import httpcli.io.IOUtils;
+import java.io.FilterInputStream;
 
 public class HttpUrlStack implements HttpStack { 
   
@@ -129,7 +130,7 @@ public class HttpUrlStack implements HttpStack {
       throw new IOException("Could not retrieve response code from HttpUrlConnection.");
     }
     
-    ResponseBody response = body(conn);
+    ResponseBody response = new ResponseBody(getInputStream(conn));
     response.request = request;
     response.code = responseCode;
     response.headers = Headers.of(conn.getHeaderFields());
@@ -142,15 +143,15 @@ public class HttpUrlStack implements HttpStack {
     return response;
   }
   
-  static ResponseBody body(final HttpURLConnection hurlc) {
+  static InputStream getInputStream(final HttpURLConnection hurlc) {
     InputStream inputStream;
     try {
       inputStream = hurlc.getInputStream();
     } catch(IOException e) {
       inputStream = hurlc.getErrorStream();
     }
-    return new ResponseBody(inputStream) {
-      @Override public void close() {
+    return new FilterInputStream(inputStream) {
+      @Override public void close() throws IOException {
         super.close();
         hurlc.disconnect();
       }
@@ -170,8 +171,6 @@ public class HttpUrlStack implements HttpStack {
     HttpURLConnection conn = null;
     try {
       conn = open(request);
-      if (request.isCanceled()) throw new IOException("request is cancel");
-      
       writeHeaders(conn, request);
       writeBody(conn, request);
       return getResponse(conn, request);

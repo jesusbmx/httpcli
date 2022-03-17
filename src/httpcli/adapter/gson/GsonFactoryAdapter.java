@@ -31,6 +31,7 @@ public class GsonFactoryAdapter extends FactoryAdapter {
 
     @Override
     public <V> Map<String, Object> toMap(V src) {
+        if (src == null) return null;
         Class<V> classOf = (Class<V>) src.getClass();
         
         TypeAdapter<V> adapter = gson.getAdapter(classOf);

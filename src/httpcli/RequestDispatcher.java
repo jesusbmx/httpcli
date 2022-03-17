@@ -1,106 +1,106 @@
 package httpcli;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 /*import android.os.Process;*/
 
-public class RequestDispatcher extends Thread {
+public class RequestDispatcher implements ThreadFactory {
+  /** Numero de despachadores que atenderan las peticiones de la red. */
+  static final int DEFAULT_NETWORK_THREAD_POOL_SIZE = 4;
+  /** Singleton de la clase. */
+  private static RequestDispatcher instance;
 
-  /** Cola de peticiones al servidor. */
-  private final HttpCli cli;
+  /** Livera las respuestas al hilo de la UI. */
+  private Executor executorDelivery;
   
-  /** Es usado para decir que el hilo a muerto. */
-  private volatile boolean quit = false;
-
-  /**
-   * @param cli cola de peticiones.
-   */
-  public RequestDispatcher(HttpCli cli) {
-    this.cli = cli;
-    setPriority(MIN_PRIORITY);
+  /** Ejecuta las llamadas "Call". */
+  private ExecutorService executorService;
+  
+  public RequestDispatcher(ExecutorService executorService) {
+    this.executorService = executorService;
   }
 
-  /**
-   * Obliga al hilo a detenerce inmediatamente.
-   */
-  @Override public void interrupt() {
-    quit = true;
-    super.interrupt();
+  public RequestDispatcher() {
   }
-
-  /**
-   * Metodo que desarrolla un bucle que estara observando si existe una o varias
-   * 'Request' en la cola, si hay una request la procesara por medio del objeto
-   * 'NetworkConnection'.
-   */
-  @Override public void run() {
-    /*Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);*/
-    while (true) {
-      HttpCall<?> request;
-      
-      try {
-        // Toma y quita la peticion de la cola.
-        request = cli.networkQueue().take();
-      } catch (InterruptedException e) {
-        // El hilo pudo haber sido interrumpido.
-        if (quit) return;
-        continue;
-      }
-
-      try {
-        // Si la petición ya estaba cancelada, no funciona la petición de la red.
-        if (request.isCancel()) continue;
-
-        // Procesa la request.
-        ResponseBody response = cli.execute(request.request());
-        
-        // Si la petición ya estaba cancelada, no funciona la petición de la red.
-        if (request.isCancel()) {
-          response.close();
-          continue;
-        }
-         
-        this.onResponse(request, 
-                request.adapter().parse(response));
-        
-      } catch (Exception e) {
-        // TODO: handle exception
-        this.onFailure(request.callback(), e);
-      
-      } 
+  
+  public synchronized static RequestDispatcher get() {
+    if (instance == null) {
+      instance = new RequestDispatcher();
     }
+    return instance;
+  }
+  
+  @Override public Thread newThread(Runnable runnable) {
+    Thread result = new Thread(runnable, "HttpCli RequestDispatcher");
+    result.setPriority(Thread.MIN_PRIORITY);
+    return result;
+  }
+  
+  public synchronized ExecutorService executorService() {
+    if (executorService == null) {
+      executorService = new ThreadPoolExecutor(
+              DEFAULT_NETWORK_THREAD_POOL_SIZE, DEFAULT_NETWORK_THREAD_POOL_SIZE
+              , 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), this);
+    }
+    return executorService;
+  }
+  public void setExecutorService(ExecutorService es) {
+    executorService = es;
+  }
+  
+  /** Ejecuta la llamada en la cola de peticiones. */
+  public synchronized boolean execute(AsyncHttpCall<?> task) { 
+    if (task.isCancelled() || task.isDone()) return false;
+    // Propone una tarea Runnable para la ejecución y devuelve un Futuro.
+    task.future = executorService().submit(task);
+    return true;
+  }
+    
+  public Executor executorDelivery() {
+    if (executorDelivery == null) {
+      executorDelivery = Platform.get();
+    }
+    return executorDelivery;
+  }
+  public void setExecutorDelivery(Executor executor) {
+    executorDelivery = executor;
+  }
+  
+  public void delivery(Runnable runnable) {
+    executorDelivery().execute(runnable);
   }
   
   /**
-   * Metodo que se encarga de liverar la respuesta obtenida de la conexión.
+   * Metodo que se encarga de liverar la respuesta obtenida, al hilo de la UI.
    */
-  public void onResponse(final HttpCall request, final Object result) {
-    cli.executorDelivery().execute(new Runnable() {  
-      
+  public <V> void onResponse(final HttpCallback<V> callback, final V result) {
+    delivery(new Runnable() {  
       @Override public void run() {
-        HttpCallback callback = request.callback();
-        if (callback != null) {
-          try {
-            callback.onResponse(result);
-          } catch (Exception error) {
-            callback.onFailure(error);
-          } 
+        try {
+          callback.onResponse(result);
+        } catch (Exception error) {
+          callback.onFailure(error);
         }
-        //request.atTheEnd(result);
       }
     });
   }
 
   /**
-   * Metodo que se encarga de liverar el error obtenido de la conexión.
+   * Metodo que se encarga de liverar el error obtenido, al hilo de la UI.
    */
   public void onFailure(final HttpCallback<?> callback, final Exception error) {
-    cli.executorDelivery().execute(new Runnable() {
-      
+    delivery(new Runnable() {
       @Override public void run() {
-        if (callback != null) {
-            callback.onFailure(error);
-        }
+        callback.onFailure(error);
       }
     });
   }
+
+
 
 }
