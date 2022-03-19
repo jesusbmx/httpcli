@@ -26,7 +26,7 @@ public class AsynTest {
     return cli.newCall(request, ResponseBody.class);
   }
   
-  public void async() {
+   public void async() {
     HttpCall<ResponseBody> insert = insert(
             "Elizabéth Magaña", 22, true);
     
@@ -44,6 +44,25 @@ public class AsynTest {
       }
     });
   }
+  
+//  public void async() {
+//    HttpCall<ResponseBody> insert = insert(
+//            "Elizabéth Magaña", 22, true);
+//    
+//    insert.execute(new HttpCallback<ResponseBody>() {
+//
+//      @Override
+//      public void onResponse(ResponseBody result) throws Exception {
+//        String str = result.string();
+//        System.out.println(str);
+//      }
+//        
+//      @Override
+//      public void onFailure(Exception e) {
+//        e.printStackTrace();
+//      }
+//    });
+//  }
   
 //  public void sync() {
 //    HttpCall<ResponseBody> insert = insert(

@@ -7,7 +7,7 @@ import httpcli.ResponseBody;
 import httpcli.adapter.RespBodyFile;
 import java.io.File;
 
-public class ApiRest {
+public class RestTest {
     
     HttpCli cli = HttpCli.get()
             .setDebug(true)
@@ -92,7 +92,7 @@ public class ApiRest {
     }
     
     public static void main(String[] args) {
-        ApiRest api = new ApiRest();
+        RestTest api = new RestTest();
      
         try {
             

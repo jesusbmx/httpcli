@@ -119,11 +119,11 @@ public class HttpCli implements HttpStack {
    * 
    * @return una llamada
    */
-  public <V> HttpCall<V> newCall(HttpRequest request, RespBodyAdapter<V> adapter) {
+  public <V> AsyncHttpCall<V> newCall(HttpRequest request, RespBodyAdapter<V> adapter) {
     return new AsyncHttpCall<V>(this, request, adapter);
   }
   
-  public <V> HttpCall<V> newCall(HttpRequest request, Class<V> classOf) {
+  public <V> AsyncHttpCall<V> newCall(HttpRequest request, Class<V> classOf) {
     return newCall(request, factory().respBodyAdapter(classOf));
   }
 
