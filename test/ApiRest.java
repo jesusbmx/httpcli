@@ -34,9 +34,8 @@ public class ApiRest {
 //    }
     
     String get() throws Exception {
-        HttpUrl url = new HttpUrl("https://api.github.com/users/defunkt");
-        
-        HttpRequest request = new HttpRequest("GET", url);
+        HttpRequest request = new HttpRequest("GET", 
+                "https://api.github.com/users/defunkt");
 
         return cli.execute(request, String.class);
     }
@@ -65,7 +64,7 @@ public class ApiRest {
     
     File download() throws Exception {
         HttpRequest request = new HttpRequest(
-            "GET", "https://github.com/HttpCli/Restlight/raw/master/dist/httpcli.jar")
+            "GET", "https://github.com/jesusbmx/HttpCli/raw/master/dist/httpcli.jar")
             .setTimeoutMs(5000 * 2 * 2);
         
         RespBodyFile adapter = new RespBodyFile(
