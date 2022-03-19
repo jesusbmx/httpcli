@@ -83,7 +83,8 @@ String upload() throws Exception {
 String run() throws Exception {
   HttpUrl url = new HttpUrl("https://api.github.com/users/defunkt");
 
-  HttpRequest request = new HttpRequest("GET", url);
+  HttpRequest request = new HttpRequest("GET", url)
+      .addHeader("Accept", "application/json");
 
   try (ResponseBody body = cli.execute(request)) {
     //body.code {200}

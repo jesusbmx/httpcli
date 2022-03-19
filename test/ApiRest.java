@@ -13,26 +13,6 @@ public class ApiRest {
             .setDebug(true)
     ;
     
-//    String run() throws Exception {
-//        HttpRequest request = new HttpRequest(
-//            "GET", "https://api.github.com/users/defunkt");
-//
-//        try (ResponseBody body = cli.execute(request)) {
-//            //body.code [200];
-//            //body.headers [
-//            //   Keep-Alive: timeout=5, max=98
-//            //    Server: Apache/2.4.25 (Win32) OpenSSL/1.0.2j PHP/5.6.30
-//            //    Connection: Keep-Alive
-//            //    Content-Length: 2245
-//            //    Date: Sun, 13 Mar 2022 15:01:53 GMT
-//            //    Content-Type: text/html; charset=UTF-8
-//            //    X-Powered-By: PHP/5.6.30
-//            //];
-//            //body.in [InputStream];
-//            return body.string();
-//        }
-//    }
-    
     String get() throws Exception {
         HttpRequest request = new HttpRequest("GET", 
                 "https://api.github.com/users/defunkt");
@@ -83,7 +63,33 @@ public class ApiRest {
           "POST", "http://127.0.0.1/test.php", body);
 
         return cli.execute(request, String.class);
-   }
+    }
+    
+     String run() throws Exception {
+        HttpUrl url = new HttpUrl("https://api.github.com/users/defunkt");
+        
+        HttpRequest request = new HttpRequest("GET", url)
+                .addHeader("Accept", "application/json");
+
+        ResponseBody body = null;
+        try {
+            body = cli.execute(request);
+//            body.code [200];
+//            body.headers [
+//               Keep-Alive: timeout=5, max=98
+//                Server: Apache/2.4.25 (Win32) OpenSSL/1.0.2j PHP/5.6.30
+//                Connection: Keep-Alive
+//                Content-Length: 2245
+//                Date: Sun, 13 Mar 2022 15:01:53 GMT
+//                Content-Type: text/html; charset=UTF-8
+//                X-Powered-By: PHP/5.6.30
+//            ];
+//            body.in [InputStream];
+            return body.string();
+        } finally {
+            if (body != null) body.close();
+        }
+    }
     
     public static void main(String[] args) {
         ApiRest api = new ApiRest();
