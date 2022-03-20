@@ -20,7 +20,7 @@ String get() throws Exception {
 }
 ```
 
-### POST
+#### POST
 ```java
 String post(int id, String name, boolean active) throws Exception {
   FormBody reqBody = new FormBody()
@@ -35,7 +35,7 @@ String post(int id, String name, boolean active) throws Exception {
 }
 ```
 
-### DELETE
+#### DELETE
 ```java
 String delete(int id) throws Exception {
   FormBody body = new FormBody()
@@ -49,7 +49,7 @@ String delete(int id) throws Exception {
 }
 ```
 
-### DOWLOAD
+#### DOWLOAD
 ```java
 File download() throws Exception {
   HttpRequest request = new HttpRequest(
@@ -64,7 +64,7 @@ File download() throws Exception {
 }
 ```
 
-### UPLOAD
+#### UPLOAD
 ```java
 String upload() throws Exception { 
   MultipartBody body = new MultipartBody()
@@ -78,7 +78,7 @@ String upload() throws Exception {
 }
 ```
 
-### Simple Request
+#### Simple Request
 ```java
 String run() throws Exception {
   HttpUrl url = new HttpUrl("https://api.github.com/users/defunkt");
@@ -121,7 +121,7 @@ public HttpCall<ResponseBody> insert(
 }
 ```
 
-### Asíncrono
+#### Asíncrono
 
 Envía de manera asíncrona la petición y notifica a tu aplicación con un callback cuando una respuesta regresa. Ya que esta petición es asíncrona, Restligth maneja la ejecución en el hilo de fondo para que el hilo de la 
 UI principal no sea bloqueada o interfiera con esta.
@@ -145,7 +145,7 @@ insert.execute(new HttpCallback<ResponseBody>() {
 });
 ```
 
-### Síncrono
+#### Síncrono
 
 Envíe sincrónicamente la solicitud y devuelva su respuesta.
 
