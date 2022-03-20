@@ -1,6 +1,6 @@
 package httpcli.adapter;
 
-import httpcli.SimpleResponseBody;
+import httpcli.BytesResponseBody;
 import httpcli.ResponseBody;
 
 public class RespBodyRB implements RespBodyAdapter<ResponseBody> {
@@ -9,7 +9,7 @@ public class RespBodyRB implements RespBodyAdapter<ResponseBody> {
     public ResponseBody parse(ResponseBody respBody) throws Exception {
       try {
         byte[] data = respBody.bytes();
-        return new SimpleResponseBody(respBody, data);
+        return new BytesResponseBody(respBody, data);
       } finally {
         respBody.close();
       }
