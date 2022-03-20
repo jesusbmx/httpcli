@@ -138,4 +138,15 @@ public class HttpCli implements HttpStack {
   public <V> MultipartBody multipartBody(V src) {
     return factory().multipartBody(src);
   }
+  
+  public AsyncHttpCall<ResponseBody> post(String url, RequestBody body, Headers headers) {
+    return newCall(new HttpRequest("POST", url, body).setHeaders(headers), 
+            ResponseBody.class);
+  }
+  public AsyncHttpCall<ResponseBody> post(String url, RequestBody body) {
+    return newCall(new HttpRequest("POST", url, body), ResponseBody.class);
+  }
+  public AsyncHttpCall<ResponseBody> post(String url) {
+    return newCall(new HttpRequest("POST", url), ResponseBody.class);
+  }
 }

@@ -4,13 +4,13 @@ HttpCli es una librería **HTTP** para Android y Java, que facilita la creación
 
 ## Ejemplos
 
-### init
+#### init
 ```java
 HttpCli cli = HttpCli.get()
     .setDebug(true);
 ```
 
-### GET
+#### GET
 ```java
 String get() throws Exception {
   HttpRequest request = new HttpRequest(

@@ -53,7 +53,7 @@ public class AsyncHttpCall<T>
   }
   
   @Override public T execute() throws Exception {
-    return this.cli.execute(request, adapter);
+    return this.cli.execute(request(), adapter());
   }
   
   @Override public boolean cancel(boolean mayInterruptIfRunning) {
