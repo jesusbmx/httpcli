@@ -5,7 +5,7 @@ import httpcli.HttpCli;
 import httpcli.HttpRequest;
 import httpcli.adapter.HttpResult;
 
-public class SimpleCli {
+public class SimpleAsync {
 
     public static void main(String[] args) throws Exception {
         HttpCli cli = HttpCli.get()
