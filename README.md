@@ -136,6 +136,9 @@ insert.execute(new HttpCallback<ResponseBody>() {
     public void onResponse(ResponseBody result) throws Exception {
         String str = result.string();
         System.out.println(str);
+
+        //JSONObject json = result.as(JSONObject.class);
+        //System.out.println(json);
     }
         
     @Override
