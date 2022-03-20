@@ -1,5 +1,6 @@
 package httpcli.adapter;
 
+import httpcli.SimpleResponseBody;
 import httpcli.adapter.json.RespBodyJSON;
 import httpcli.adapter.json.JSON;
 import httpcli.FormBody;
@@ -63,10 +64,8 @@ public class FactoryAdapter {
           return (RespBodyAdapter<V>) new RespBodyJSON();
       if (classOf == File.class)
           return (RespBodyAdapter<V>) new RespBodyFile();
-      if (classOf == ResponseBody.class)
+      if (classOf == ResponseBody.class || classOf == SimpleResponseBody.class)
           return (RespBodyAdapter<V>) new RespBodyRB();
-      if (classOf == HttpResult.class)
-          return (RespBodyAdapter<V>) new RespBodyResult();
       
       return newOtherRespBodyAdapter(classOf);
     }

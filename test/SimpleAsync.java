@@ -3,7 +3,7 @@ import httpcli.HttpCall;
 import httpcli.HttpCallback;
 import httpcli.HttpCli;
 import httpcli.HttpRequest;
-import httpcli.adapter.HttpResult;
+import httpcli.ResponseBody;
 
 public class SimpleAsync {
 
@@ -14,11 +14,11 @@ public class SimpleAsync {
         HttpRequest request = new HttpRequest(
                 "GET", "http://127.0.0.1/test.php");
         
-        HttpCall<HttpResult> call = cli.newCall(request);
+        HttpCall<ResponseBody> call = cli.newCall(request);
         
-        call.execute(new HttpCallback<HttpResult>() {
+        call.execute(new HttpCallback<ResponseBody>() {
             @Override
-            public void onResponse(HttpResult result) throws Exception {
+            public void onResponse(ResponseBody result) throws Exception {
               String str = result.as(String.class);
               System.out.println(str);
             }

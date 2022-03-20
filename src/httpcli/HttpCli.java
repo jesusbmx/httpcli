@@ -1,6 +1,5 @@
 package httpcli;
 
-import httpcli.adapter.HttpResult;
 import java.io.IOException;
 import httpcli.adapter.FactoryAdapter;
 import httpcli.adapter.RespBodyAdapter;
@@ -129,8 +128,8 @@ public class HttpCli implements HttpStack {
     return newCall(request, factory().respBodyAdapter(classOf));
   }
   
-  public AsyncHttpCall<HttpResult> newCall(HttpRequest request) {
-    return newCall(request, factory().respBodyAdapter(HttpResult.class));
+  public AsyncHttpCall<ResponseBody> newCall(HttpRequest request) {
+    return newCall(request, factory().respBodyAdapter(ResponseBody.class));
   }
   
   public <V> RequestBody requestBody(V src) {
