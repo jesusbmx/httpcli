@@ -1,5 +1,6 @@
 package httpcli;
 
+import httpcli.adapter.RespBodyAdapter;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +55,16 @@ public class ResponseBody implements Closeable {
     } finally {
       close();
     }
+  }
+  
+  public <V> V as(RespBodyAdapter<V> adapter) throws Exception {
+    return adapter.parse(this);
+  }
+  
+  public <V> V as(Class<V> classOf) throws Exception {
+    if (request.cli == null) 
+        throw new NullPointerException("This request does not have any HttpCli");
+    return as(request.cli.factory().respBodyAdapter(classOf));
   }
   
   @Override public void close() {

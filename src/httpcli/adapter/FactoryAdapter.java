@@ -65,6 +65,8 @@ public class FactoryAdapter {
           return (RespBodyAdapter<V>) new RespBodyFile();
       if (classOf == ResponseBody.class)
           return (RespBodyAdapter<V>) new RespBodyRB();
+      if (classOf == HttpResult.class)
+          return (RespBodyAdapter<V>) new RespBodyResult();
       
       return newOtherRespBodyAdapter(classOf);
     }
@@ -101,6 +103,7 @@ public class FactoryAdapter {
 
     public <V> RequestBody requestBody(V src) {
         if (src == null) return null;
+        if (src instanceof RequestBody) return (RequestBody) src;
         try {
           Class<V> classOf = (Class<V>) src.getClass();
           ReqBodyAdapter<V> adapter = reqBodyAdapter(classOf);
@@ -112,11 +115,13 @@ public class FactoryAdapter {
 
     public <V> FormBody formBody(V src) {
         if (src == null) return null;
+        if (src instanceof FormBody) return (FormBody) src;
         return new FormBody(map(src));
     }
     
     public <V> MultipartBody multipartBody(V src) {
         if (src == null) return null;
+        if (src instanceof MultipartBody) return (MultipartBody) src;
         return new MultipartBody(map(src));
     }
 

@@ -1,5 +1,6 @@
 package httpcli;
 
+import httpcli.adapter.HttpResult;
 import java.io.IOException;
 import httpcli.adapter.FactoryAdapter;
 import httpcli.adapter.RespBodyAdapter;
@@ -86,8 +87,9 @@ public class HttpCli implements HttpStack {
    * @throws java.io.IOException si se produjo un problema al hablar con el
    * servidor
    */
-  public ResponseBody execute(HttpRequest request) throws IOException {
+  @Override public ResponseBody execute(HttpRequest request) throws IOException {
     if (debug) request.setDebug(debug);
+    request.cli = this;
     return stack().execute(request);
   }
 
@@ -126,7 +128,11 @@ public class HttpCli implements HttpStack {
   public <V> AsyncHttpCall<V> newCall(HttpRequest request, Class<V> classOf) {
     return newCall(request, factory().respBodyAdapter(classOf));
   }
-
+  
+  public AsyncHttpCall<HttpResult> newCall(HttpRequest request) {
+    return newCall(request, factory().respBodyAdapter(HttpResult.class));
+  }
+  
   public <V> RequestBody requestBody(V src) {
     return factory().requestBody(src);
   }
@@ -137,16 +143,5 @@ public class HttpCli implements HttpStack {
   
   public <V> MultipartBody multipartBody(V src) {
     return factory().multipartBody(src);
-  }
-  
-  public AsyncHttpCall<ResponseBody> post(String url, RequestBody body, Headers headers) {
-    return newCall(new HttpRequest("POST", url, body).setHeaders(headers), 
-            ResponseBody.class);
-  }
-  public AsyncHttpCall<ResponseBody> post(String url, RequestBody body) {
-    return newCall(new HttpRequest("POST", url, body), ResponseBody.class);
-  }
-  public AsyncHttpCall<ResponseBody> post(String url) {
-    return newCall(new HttpRequest("POST", url), ResponseBody.class);
   }
 }

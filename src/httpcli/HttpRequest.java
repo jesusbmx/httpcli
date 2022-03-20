@@ -36,6 +36,8 @@ public class HttpRequest {
 
   boolean isDebug;
   
+  HttpCli cli;
+  
   public HttpRequest() {
   }
   
