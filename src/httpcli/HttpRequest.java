@@ -1,5 +1,6 @@
 package httpcli;
 
+import httpcli.adapter.RespBodyAdapter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -36,7 +37,7 @@ public class HttpRequest {
 
   boolean isDebug;
   
-  HttpCli cli;
+  HttpCli cli = HttpCli.get();
   
   public HttpRequest() {
   }
@@ -158,5 +159,23 @@ public class HttpRequest {
       rb.writeTo(System.out, charset);
       System.out.println("\n");
     }
+  }
+  
+  public ResponseBody execute() throws Exception {
+    return cli.execute(this);
+  }
+  
+  public <V> V execute(RespBodyAdapter<V> adapter) throws Exception {
+    return cli.execute(this, adapter);
+  }
+  public <V> V execute(Class<V> classOf) throws Exception {
+    return cli.execute(this, classOf);
+  }
+  
+  public <V> HttpCall<V> newCall(RespBodyAdapter<V> adapter) throws Exception {
+    return cli.newCall(this, adapter);
+  }
+  public <V> HttpCall<V> newCall(Class<V> classOf) throws Exception {
+    return cli.newCall(this, classOf);
   }
 }
