@@ -19,7 +19,7 @@ public class FormBodyTest {
         post.url = "http://127.0.0.1";
         post.body = "My body";
         
-        RequestBody requestBody = cli.multipartBody(post);
+        RequestBody requestBody = cli.requestBody(post);
         requestBody.writeTo(System.out, Charset.forName("UTF-8"));
     }
     

@@ -23,6 +23,10 @@ public class AsyncHttpCall<T>
     this.dispatcher = cli.dispatcher();
   }
   
+  public AsyncHttpCall(HttpRequest request, RespBodyAdapter<T> adapter) {
+    this(request.cli, request, adapter);
+  }
+  
   @Override public HttpRequest request() {
     return this.request;
   }

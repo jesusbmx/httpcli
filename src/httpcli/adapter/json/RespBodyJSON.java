@@ -17,7 +17,7 @@ public class RespBodyJSON implements RespBodyAdapter<JSON>{
         }
     }    
     
-    public static class Object implements RespBodyAdapter<JSONObject>{
+    public static class Obj implements RespBodyAdapter<JSONObject>{
 
         @Override
         public JSONObject parse(ResponseBody respBody) throws Exception {

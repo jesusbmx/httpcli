@@ -7,6 +7,7 @@ import httpcli.FormBody;
 import httpcli.MultipartBody;
 import httpcli.RequestBody;
 import httpcli.ResponseBody;
+import httpcli.adapter.json.ReqBodyJSON;
 import java.util.HashMap;
 import java.io.File;
 import java.util.Iterator;
@@ -57,7 +58,7 @@ public class FactoryAdapter {
       if (classOf == String.class) 
           return (RespBodyAdapter<V>) new RespBodyString();
       if (name.equals("org.json.JSONObject")) 
-          return (RespBodyAdapter<V>) new RespBodyJSON.Object();
+          return (RespBodyAdapter<V>) new RespBodyJSON.Obj();
       if (name.equals("org.json.JSONArray")) 
           return (RespBodyAdapter<V>) new RespBodyJSON.Array();
       if (classOf == JSON.class) 
@@ -71,7 +72,8 @@ public class FactoryAdapter {
     }
     
     public <V> RespBodyAdapter<V> newOtherRespBodyAdapter(Class<V> classOf) {
-        throw new RuntimeException("No adapter found for class '"+classOf+"'");
+        String name = classOf.getCanonicalName();
+        throw new RuntimeException("No adapter found for class '"+name+"'");
     }
     
     public <V> ReqBodyAdapter<V> reqBodyAdapter(Class<V> classOf) {
@@ -93,11 +95,22 @@ public class FactoryAdapter {
     }
     
     public <V> ReqBodyAdapter<V> newReqBodyAdapter(Class<V> classOf) {
+      String name = classOf.getCanonicalName();
+      
+      if (name.equals("org.json.JSONObject")) 
+          return (ReqBodyAdapter<V>) new ReqBodyJSON.Obj();
+      if (name.equals("org.json.JSONArray")) 
+          return (ReqBodyAdapter<V>) new RespBodyJSON.Array();
+      if (classOf == JSON.class) 
+          return (ReqBodyAdapter<V>) new ReqBodyJSON();
+      
       return newOtherReqBodyAdapter(classOf);
     }
     
     public <V> ReqBodyAdapter<V> newOtherReqBodyAdapter(Class<V> classOf) {
-        throw new RuntimeException("No adapter found for class '"+classOf+"'");
+ //       String name = classOf.getCanonicalName();
+ //       throw new RuntimeException("No adapter found for class '"+name+"'");
+       return new ReqBodyJSON.Any<V>(classOf);
     }
 
     public <V> RequestBody requestBody(V src) {
