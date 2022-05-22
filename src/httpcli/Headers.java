@@ -11,13 +11,18 @@ public class Headers {
   public static final String CONTENT_TRANSFER_ENCODING = "Content-Transfer-Encoding";
 
   private final List<String> namesAndValues;
-
+  
+  public Headers(int size) {
+    namesAndValues = new ArrayList<String>(size * 2);
+  }
+    
   public Headers() {
     this(10);
   }
   
-  public Headers(int size) {
-    namesAndValues = new ArrayList<String>(size * 2);
+  public Headers(String... headers) {
+    this(headers.length);
+    addAll(headers);
   }
   
   public int size() {
@@ -35,6 +40,34 @@ public class Headers {
     
     namesAndValues.add(name);
     namesAndValues.add(value);
+    return this;
+  }
+  
+  public Headers add(String name, List<String> values) {
+    if (name == null) return this;
+    for (int i = 0; i < values.size(); i++) {
+      this.add(name, values.get(i));
+    }
+    return this;
+  }
+  
+  public Headers addAll(Map<String, String> headers) {
+    for (Map.Entry<String, String> entry : headers.entrySet()) {
+      add(entry.getKey(), entry.getValue());
+    }
+    return this;
+  }
+  
+  public Headers add(String header) {
+    int i = header.indexOf(':');
+    if (i == -1) throw new IllegalArgumentException(header);
+    String name = header.substring(0, i);
+    String value = header.substring(i+1, header.length());
+    return add(name.trim(), value.trim());
+  }
+  
+  public Headers addAll(String... headers) {
+    for (String header : headers) add(header);
     return this;
   }
   
@@ -58,13 +91,7 @@ public class Headers {
   public static Headers of(Map<String, List<String>> map) {
     Headers headers = new Headers(map.size());
     for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-      String key = entry.getKey();
-      if (key != null) {
-        List<String> value = entry.getValue();
-        for (int i = 0; i < value.size(); i++) {
-          headers.add(key, value.get(i));
-        } 
-      }
+      headers.add(entry.getKey(), entry.getValue());
     }
     return headers;
   }
@@ -98,4 +125,12 @@ public class Headers {
     }
     return result.toString();
   }
+  
+  /*public static void main(String[] args) {
+    Headers h = new Headers(
+           "Content-Type: application/x-www-form-urlencoded; charset=UTF-8",
+           "Content-Type: application/x-www-form-urlencoded; charset=UTF-8"
+    );
+    System.out.println(h);
+  }*/
 }
