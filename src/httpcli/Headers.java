@@ -79,13 +79,17 @@ public class Headers {
     return namesAndValues.get(index * 2 + 1);
   }
   
-  public String value(String key) {
+  public String value(String key, String defaultval) {
     for (int i = namesAndValues.size() - 2; i >= 0; i -= 2) {
       if (key.equalsIgnoreCase(namesAndValues.get(i))) {
         return namesAndValues.get(i + 1);
       }
     }
-    return null;
+    return defaultval;
+  }
+  
+  public String value(String key) {
+    return value(key, null);
   }
 
   public static Headers of(Map<String, List<String>> map) {
